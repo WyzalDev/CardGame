@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Project.Scripts.UI.Optimization
+namespace _Project.Optimization
 {
     public class StaticUIOptimizer : MonoBehaviour
     {
