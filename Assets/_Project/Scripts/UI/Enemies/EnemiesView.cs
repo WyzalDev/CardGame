@@ -1,4 +1,4 @@
-﻿using _Project.Core.Enemies;
+﻿using _Project.UI.Data;
 using UnityEngine;
 
 namespace _Project.UI.Enemies
@@ -7,7 +7,7 @@ namespace _Project.UI.Enemies
     {
         [SerializeField] private EnemyView[] _enemyViews;
 
-        public void SetEnemies(Enemy[] enemies)
+        public void SetEnemies(EnemyDTO[] enemies)
         {
             EnableViews(enemies.Length);
 
@@ -17,6 +17,27 @@ namespace _Project.UI.Enemies
                 UpdateEnemySlot(enemies[i], _enemyViews[i].Slot);
             }
         }
+
+        public void UpdateEnemyHp(int index, int currentHp, int maxHp)
+        {
+            if (!CheckForOutOfRange(index))
+                return;
+
+            var enemyUIView = _enemyViews[index].UI;
+            enemyUIView.SetMaxHp(maxHp);
+            enemyUIView.SetHp(currentHp);
+        }
+
+        public void DisableView(int index)
+        {
+            if (!CheckForOutOfRange(index))
+                return;
+
+            var enemyView = _enemyViews[index];
+            enemyView.UI.gameObject.SetActive(false);
+            enemyView.Slot.gameObject.SetActive(false);
+        }
+
 
         private void EnableViews(int count)
         {
@@ -28,17 +49,26 @@ namespace _Project.UI.Enemies
             }
         }
 
-        private void UpdateEnemyUI(Enemy enemy, EnemyUIView enemyUIView)
+        private void UpdateEnemyUI(EnemyDTO enemy, EnemyUIView enemyUIView)
         {
             enemyUIView.SetName(enemy.Name);
             enemyUIView.SetMaxHp(enemy.MaxHealth);
             enemyUIView.SetHp(enemy.Health);
         }
 
-        private void UpdateEnemySlot(Enemy enemy, EnemySlotView enemySlotView)
+        private void UpdateEnemySlot(EnemyDTO enemy, EnemySlotView enemySlotView)
         {
             enemySlotView.SetTitle(enemy.Name);
             enemySlotView.SetSprite(enemy.Sprite);
+        }
+
+        private bool CheckForOutOfRange(int index)
+        {
+            if (index < _enemyViews.Length)
+                return true;
+
+            Debug.LogError("Index out of range");
+            return false;
         }
     }
 }
